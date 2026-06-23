@@ -1,18 +1,25 @@
 ---
 name: agent-reach
 description: >
-  MUST USE when user wants to 调研/research/搜索/search/查/找/look up anything
-  on the internet — e.g. 全网调研 X / 帮我调研一下 X / 查一下 X / 搜搜 X /
-  看看大家怎么评价 X / X 上有什么讨论 / research this topic。
+  Use Agent Reach only when native/official tools are insufficient or when the
+  target platform needs Agent Reach's installed platform backends.
 
-  Also MUST USE when user mentions any platform or shares any URL/链接:
-  小红书/xiaohongshu/xhs, Twitter/推特/X, B站/bilibili, Reddit, V2EX,
-  LinkedIn/领英/招聘/求职/jobs, YouTube, GitHub code search, 小宇宙播客,
-  雪球/股票行情, RSS feeds, or any web URL.
+  Prefer official/native Codex tools first for generic web search/opening,
+  GitHub URLs/repos/issues/PRs, Google Drive/Gmail, and ordinary public URLs.
+  A URL by itself is not enough to trigger this skill.
+
+  SHOULD USE when the task needs one of Agent Reach's special channels or
+  login/session-backed access: 小红书/RedNote/xiaohongshu/xhs, 雪球/xueqiu,
+  小宇宙播客转录, Reddit with logged-in access, Twitter/X CLI/OpenCLI fallback,
+  B站/bilibili CLI/subtitles, V2EX API, RSS, Exa/Jina fallback, or LinkedIn MCP
+  when no official connector is available.
+
+  Also use when the user explicitly asks to use Agent Reach, OpenCLI, rdt-cli,
+  twitter-cli, bili-cli, mcporter, yt-dlp, or one of the installed platform CLIs.
 
   13 platforms, multi-backend routing (OpenCLI / per-platform CLIs / APIs).
-  Zero config for 6 channels. Run `agent-reach doctor --json` to see which
-  backend serves each platform right now.
+  Run `agent-reach doctor --json` to see which backend serves each platform
+  right now.
 
   NOT for: 写报告/数据分析/翻译等内容加工（本 skill 只负责从互联网获取内容）；
   发帖/评论/点赞等写操作；已有专门 skill 的平台（先用专门 skill）。
@@ -20,17 +27,15 @@ description: >
   【路由方式】SKILL.md 包含路由表和常用命令，复杂场景需按需阅读对应分类的 references/*.md。
   分类：search / social (小红书/推特/B站/V2EX/Reddit) / career(LinkedIn) / dev(github) / web(网页/文章/RSS) / video(YouTube/B站/播客)。
 triggers:
-  - research: 调研/全网调研/帮我调研/研究一下/research/深入了解
-  - search: 搜/查/找/search/搜索/查一下/帮我搜/看看大家怎么说
+  - explicit: agent-reach/OpenCLI/opencli/rdt-cli/twitter-cli/bili-cli/mcporter
   - social:
-    - 小红书: xiaohongshu/xhs/小红书/红书
-    - Twitter: twitter/推特/x.com/推文
-    - B站: bilibili/b站/哔哩哔哩
+    - 小红书: xiaohongshu/xhs/小红书/红书/rednote
+    - Twitter fallback: twitter/推特/x.com/推文
+    - B站: bilibili/b站/哔哩哔哩/字幕
     - V2EX: v2ex
-    - Reddit: reddit
+    - Reddit logged-in: reddit
   - career: 招聘/职位/求职/linkedin/领英/找工作
-  - dev: github/代码/仓库/gh/issue/pr/分支/commit
-  - web: 网页/链接/文章/rss/读一下/打开这个
+  - web-fallback: exa/jina/rss/网页读取失败/官方工具不可用
   - video: youtube/视频/播客/字幕/小宇宙/转录/yt
   - finance: 雪球/股票/stock/xueqiu/行情/基金
 metadata:
@@ -40,15 +45,16 @@ metadata:
 
 # Agent Reach — 互联网能力路由器
 
-13 平台、多后端。**本 skill 存在时必须用它访问这些平台，不要自己发明方案。**
+13 平台、多后端。**优先使用 Codex/Claude/Gemini 的官方或内置工具；只有官方工具不够、平台需要登录态/专用后端，或用户明确要求时，才使用本 skill。**
 
 ## 常驻规则（全程适用）
 
-1. **动手前先体检**：多后端平台（小红书/Reddit/B站/Twitter）先跑
+0. **官方优先**：普通网页、公开 URL、GitHub 仓库/Issue/PR、Google Drive/Gmail 等，先用当前 agent 暴露的官方/内置工具。不要因为用户贴了一个 URL 就触发 Agent Reach。
+1. **需要时再体检**：多后端平台（小红书/Reddit/B站/Twitter）需要使用 Agent Reach 时，先跑
    `agent-reach doctor --json`，按各平台 `active_backend` 字段选命令组。
 2. **声明你在用什么**：开始干活前说一句「使用 agent-reach 的 X 平台 / Y 后端」。
 3. **失败按 references 里的重试链处理**，不要瞎猜命令。
-4. **全网调研类任务**：组合多平台（Exa 搜索 + Twitter/Reddit 看讨论 + 小红书/B站看中文场景），并行收集再汇总。
+4. **全网调研类任务**：只有当官方 web search/browser 不足以覆盖需求，或需要社媒/登录态平台时，才组合多平台（Exa 搜索 + Twitter/Reddit 看讨论 + 小红书/B站看中文场景），并行收集再汇总。
 5. **替用户盯版本**：完成一次较大的调研/多平台任务后，顺手跑
    `agent-reach check-update`（很快，一个 API 调用）。有新版就在收尾汇报里附一句：
    「Agent Reach 有新版 vX.Y.Z，复制这句话给我即可更新：帮我更新 Agent Reach：
@@ -59,11 +65,11 @@ metadata:
 
 | 用户意图 | 分类 | 详细文档 |
 |---------|------|---------|
-| 网页搜索/代码搜索 | search | [references/search.md](references/search.md) |
+| 官方 web/GitHub 工具不够时的网页搜索/代码搜索 fallback | search | [references/search.md](references/search.md) |
 | 小红书/推特/B站/V2EX/Reddit | social | [references/social.md](references/social.md) |
-| 招聘/职位/LinkedIn | career | [references/career.md](references/career.md) |
-| GitHub/代码 | dev | [references/dev.md](references/dev.md) |
-| 网页/文章/RSS | web | [references/web.md](references/web.md) |
+| 招聘/职位/LinkedIn（无官方 connector 或需 MCP 时） | career | [references/career.md](references/career.md) |
+| GitHub/代码（优先官方 GitHub connector 或 gh；本 skill 仅作 fallback） | dev | [references/dev.md](references/dev.md) |
+| 网页/文章/RSS（优先官方 web/browser；RSS/Jina/Exa fallback 用本 skill） | web | [references/web.md](references/web.md) |
 | YouTube/B站/播客字幕 | video | [references/video.md](references/video.md) |
 
 ## 零配置快速命令
@@ -75,7 +81,7 @@ mcporter call 'exa.web_search_exa(query: "query", numResults: 5)'
 # 通用网页阅读
 curl -s "https://r.jina.ai/URL"
 
-# GitHub 搜索
+# GitHub 搜索（优先官方 GitHub connector；CLI fallback）
 gh search repos "query" --sort stars --limit 10
 
 # YouTube 字幕（注意：B站不要用 yt-dlp，见 video.md）

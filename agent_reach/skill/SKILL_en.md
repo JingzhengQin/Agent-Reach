@@ -1,17 +1,25 @@
 ---
 name: agent-reach
 description: >
-  MUST USE when user wants to research/search/look up/find anything on the
-  internet — e.g. "research this topic", "do a deep dive on X", "search the
-  web for X", "see what people say about X", "look this up".
+  Use Agent Reach only when native/official tools are insufficient or when the
+  target platform needs Agent Reach's installed platform backends.
 
-  Also MUST USE when user mentions any platform or shares any URL/link:
-  Twitter/X, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu,
-  Xiaoyuzhou Podcast, LinkedIn/jobs/recruiting, V2EX, Xueqiu (stocks), RSS.
+  Prefer official/native Codex tools first for generic web search/opening,
+  GitHub URLs/repos/issues/PRs, Google Drive/Gmail, and ordinary public URLs.
+  A URL by itself is not enough to trigger this skill.
+
+  SHOULD USE when the task needs one of Agent Reach's special channels or
+  login/session-backed access: XiaoHongShu/RedNote/xhs, Xueqiu, Xiaoyuzhou
+  podcast transcription, Reddit with logged-in access, Twitter/X CLI/OpenCLI
+  fallback, Bilibili CLI/subtitles, V2EX API, RSS, Exa/Jina fallback, or
+  LinkedIn MCP when no official connector is available.
+
+  Also use when the user explicitly asks to use Agent Reach, OpenCLI, rdt-cli,
+  twitter-cli, bili-cli, mcporter, yt-dlp, or one of the installed platform CLIs.
 
   13 platforms, multi-backend routing (OpenCLI / per-platform CLIs / APIs).
-  Zero config for 6 channels. Run `agent-reach doctor --json` to see which
-  backend serves each platform right now.
+  Run `agent-reach doctor --json` to see which backend serves each platform
+  right now.
 
   NOT for: writing reports/analysis/translation (this skill only FETCHES
   internet content); posting/commenting/liking (write operations); platforms
@@ -23,21 +31,29 @@ metadata:
 
 # Agent Reach — internet capability router
 
-13 platforms, multiple backends each. **When this skill exists, use it for
-these platforms — do not invent your own approach.**
+13 platforms, multiple backends each. **Prefer official/native Codex, Claude,
+and Gemini tools first; use this skill only when those tools are insufficient,
+the platform needs a login/session-backed or specialized backend, or the user
+explicitly asks for Agent Reach.**
 
 ## Standing rules (apply for the whole session)
 
-1. **Health-check before acting**: for multi-backend platforms (XiaoHongShu /
-   Reddit / Bilibili / Twitter), run `agent-reach doctor --json` first and
-   pick the command group matching each platform's `active_backend`.
+0. **Official tools first**: for ordinary public URLs, generic web search,
+   GitHub repositories/issues/PRs, Google Drive, Gmail, and other officially
+   connected services, use the current agent's official/native tools first. Do
+   not trigger Agent Reach just because the user pasted a URL.
+1. **Health-check only when needed**: when you need Agent Reach for a
+   multi-backend platform (XiaoHongShu / Reddit / Bilibili / Twitter), run
+   `agent-reach doctor --json` first and pick the command group matching each
+   platform's `active_backend`.
 2. **Announce what you use**: say "using agent-reach, platform X via backend Y"
    before starting.
 3. **On failure, follow the retry chains in references/** — never guess
    commands.
 4. **For broad research tasks**: combine platforms (Exa for web search +
    Twitter/Reddit for discussions + XiaoHongShu/Bilibili for Chinese
-   perspectives), collect in parallel, then synthesize.
+   perspectives) only when official web search/browser coverage is not enough
+   or when social/login-backed platforms are required.
 5. **Watch versions for the user**: after finishing a substantial
    multi-platform task, run `agent-reach check-update` (fast, one API call).
    If a new version exists, append one line to your wrap-up: "Agent Reach
@@ -49,11 +65,11 @@ these platforms — do not invent your own approach.**
 
 | User intent | Category | Details |
 |---------|------|---------|
-| Web / code search | search | [references/search.md](references/search.md) |
+| Web / code search fallback when official web/GitHub tools are insufficient | search | [references/search.md](references/search.md) |
 | XiaoHongShu / Twitter / Bilibili / V2EX / Reddit | social | [references/social.md](references/social.md) |
-| Jobs / LinkedIn | career | [references/career.md](references/career.md) |
-| GitHub / code | dev | [references/dev.md](references/dev.md) |
-| Web pages / articles / RSS | web | [references/web.md](references/web.md) |
+| Jobs / LinkedIn when no official connector is available or MCP is needed | career | [references/career.md](references/career.md) |
+| GitHub / code, preferring official GitHub connector or gh first | dev | [references/dev.md](references/dev.md) |
+| Web pages / articles / RSS, preferring official web/browser first | web | [references/web.md](references/web.md) |
 | YouTube / Bilibili / podcast transcripts | video | [references/video.md](references/video.md) |
 
 ## Zero-config quick commands
@@ -65,7 +81,7 @@ mcporter call 'exa.web_search_exa(query: "query", numResults: 5)'
 # Read any web page
 curl -s "https://r.jina.ai/URL"
 
-# GitHub search
+# GitHub search (prefer official GitHub connector; CLI fallback)
 gh search repos "query" --sort stars --limit 10
 
 # YouTube subtitles (NOTE: never use yt-dlp for Bilibili — see video.md)
