@@ -1,46 +1,12 @@
 ---
 name: agent-reach
 description: >
-  Use Agent Reach only when native/official tools are insufficient or when the
-  target platform needs Agent Reach's installed platform backends.
-
-  Prefer official/native Codex tools first for generic web search/opening,
-  GitHub URLs/repos/issues/PRs, Google Drive/Gmail, and ordinary public URLs.
-  A URL by itself is not enough to trigger this skill.
-
-  SHOULD USE when the task needs one of Agent Reach's special channels or
-  login/session-backed access: 小红书/RedNote/xiaohongshu/xhs, 雪球/xueqiu,
-  小宇宙播客转录, Reddit with logged-in access, Twitter/X CLI/OpenCLI fallback,
-  B站/bilibili CLI/subtitles, V2EX API, RSS, Exa/Jina fallback, or LinkedIn MCP
-  when no official connector is available.
-
-  Also use when the user explicitly asks to use Agent Reach, OpenCLI, rdt-cli,
-  twitter-cli, bili-cli, mcporter, yt-dlp, or one of the installed platform CLIs.
-
-  13 platforms, multi-backend routing (OpenCLI / per-platform CLIs / APIs).
-  Run `agent-reach doctor --json` to see which backend serves each platform
-  right now.
-
-  NOT for: 写报告/数据分析/翻译等内容加工（本 skill 只负责从互联网获取内容）；
-  发帖/评论/点赞等写操作；已有专门 skill 的平台（先用专门 skill）。
-
-  【路由方式】SKILL.md 包含路由表和常用命令，复杂场景需按需阅读对应分类的 references/*.md。
-  分类：search / social (小红书/推特/B站/V2EX/Reddit) / career(LinkedIn) / dev(github) / web(网页/文章/RSS) / video(YouTube/B站/播客)。
-triggers:
-  - explicit: agent-reach/OpenCLI/opencli/rdt-cli/twitter-cli/bili-cli/mcporter
-  - social:
-    - 小红书: xiaohongshu/xhs/小红书/红书/rednote
-    - Twitter fallback: twitter/推特/x.com/推文
-    - B站: bilibili/b站/哔哩哔哩/字幕
-    - V2EX: v2ex
-    - Reddit logged-in: reddit
-  - career: 招聘/职位/求职/linkedin/领英/找工作
-  - web-fallback: exa/jina/rss/网页读取失败/官方工具不可用
-  - video: youtube/视频/播客/字幕/小宇宙/转录/yt
-  - finance: 雪球/股票/stock/xueqiu/行情/基金
-metadata:
-  openclaw:
-    homepage: https://github.com/Panniantong/Agent-Reach
+  Use when the task needs Agent Reach platform backends or login/session access:
+  小红书/RedNote/XHS, 雪球/Xueqiu, 小宇宙 podcast transcription, Reddit, Twitter/X,
+  Bilibili/B站, V2EX, RSS, Exa/Jina fallback, LinkedIn MCP, OpenCLI, rdt-cli,
+  twitter-cli, bili-cli, mcporter, or yt-dlp. Prefer official Codex tools for
+  generic web search, public URLs, GitHub, Google Drive, and Gmail; a URL alone
+  should not trigger this skill.
 ---
 
 # Agent Reach — 互联网能力路由器

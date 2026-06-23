@@ -1,32 +1,12 @@
 ---
 name: agent-reach
 description: >
-  Use Agent Reach only when native/official tools are insufficient or when the
-  target platform needs Agent Reach's installed platform backends.
-
-  Prefer official/native Codex tools first for generic web search/opening,
-  GitHub URLs/repos/issues/PRs, Google Drive/Gmail, and ordinary public URLs.
-  A URL by itself is not enough to trigger this skill.
-
-  SHOULD USE when the task needs one of Agent Reach's special channels or
-  login/session-backed access: XiaoHongShu/RedNote/xhs, Xueqiu, Xiaoyuzhou
-  podcast transcription, Reddit with logged-in access, Twitter/X CLI/OpenCLI
-  fallback, Bilibili CLI/subtitles, V2EX API, RSS, Exa/Jina fallback, or
-  LinkedIn MCP when no official connector is available.
-
-  Also use when the user explicitly asks to use Agent Reach, OpenCLI, rdt-cli,
-  twitter-cli, bili-cli, mcporter, yt-dlp, or one of the installed platform CLIs.
-
-  13 platforms, multi-backend routing (OpenCLI / per-platform CLIs / APIs).
-  Run `agent-reach doctor --json` to see which backend serves each platform
-  right now.
-
-  NOT for: writing reports/analysis/translation (this skill only FETCHES
-  internet content); posting/commenting/liking (write operations); platforms
-  that already have a dedicated skill installed (prefer that skill).
-metadata:
-  openclaw:
-    homepage: https://github.com/Panniantong/Agent-Reach
+  Use when the task needs Agent Reach platform backends or login/session access:
+  XiaoHongShu/RedNote/XHS, Xueqiu, Xiaoyuzhou podcast transcription, Reddit,
+  Twitter/X, Bilibili, V2EX, RSS, Exa/Jina fallback, LinkedIn MCP, OpenCLI,
+  rdt-cli, twitter-cli, bili-cli, mcporter, or yt-dlp. Prefer official Codex
+  tools for generic web search, public URLs, GitHub, Google Drive, and Gmail; a
+  URL alone should not trigger this skill.
 ---
 
 # Agent Reach — internet capability router
