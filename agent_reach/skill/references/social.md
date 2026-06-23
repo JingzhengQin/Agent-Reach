@@ -2,11 +2,48 @@
 
 小红书、Twitter/X、B站、V2EX、Reddit。
 
-## 小红书 / XiaoHongShu（多后端）
+## 小红书 / RedNote / XiaoHongShu（多后端）
 
-小红书有三个后端，**先跑 `agent-reach doctor --json` 看 xiaohongshu 的 `active_backend` 是哪个**，再用对应命令组。
+小红书有多个后端，**先跑 `agent-reach doctor --json` 看 xiaohongshu 的 `active_backend` 是哪个**，再用对应命令组。
+
+### 域名优先规则：RedNote 新域名
+
+如果用户登录后被跳转到：
+
+```text
+https://www.rednote.com/explore
+```
+
+或者 `opencli rednote whoami -f yaml` 返回 `logged_in: true`，**优先使用
+`opencli rednote ...`**。不要继续用 `opencli xiaohongshu ...`，因为
+`rednote.com` 与 `xiaohongshu.com` cookie 不共享，旧域名命令会反复报
+`AUTH_REQUIRED`。
+
+```bash
+# 登录态检查
+opencli rednote whoami -f yaml --site-session persistent --window foreground --keep-tab true
+
+# 搜索笔记
+opencli rednote search "query" --limit 20 -f yaml --site-session persistent --window foreground --keep-tab true
+
+# 读笔记正文+互动数据（用搜索结果里的完整 URL，含 xsec_token）
+opencli rednote note "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab true
+
+# 下载图文笔记图片/视频
+opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml --site-session persistent --window foreground --keep-tab true
+
+# 评论（支持楼中楼）
+opencli rednote comments NOTE_ID -f yaml --site-session persistent --window foreground --keep-tab true
+```
+
+> 实操提示：RedNote/XHS 登录态容易被新 tab 或临时上下文打散。需要连续读多篇笔记时，保留
+> `--site-session persistent --window foreground --keep-tab true`，并把下载文件放在 `/tmp/`
+> 或任务明确要求的输出目录。
 
 ### 后端 A：OpenCLI（桌面首选，复用浏览器登录态）
+
+仅当用户会话仍然停留在 `www.xiaohongshu.com`，或 `opencli rednote` 不可用时，才使用
+`opencli xiaohongshu ...`：
 
 ```bash
 # 搜索笔记
@@ -25,7 +62,8 @@ opencli xiaohongshu feed -f yaml
 opencli xiaohongshu user USER_ID -f yaml
 ```
 
-> 要求 Chrome 打开且装了 OpenCLI 扩展。报 AUTH_REQUIRED 说明浏览器里没登录小红书，让用户在 Chrome 里登录一次即可。
+> 要求 Chrome 打开且装了 OpenCLI 扩展。报 AUTH_REQUIRED 时，先判断是否已经被重定向到
+> `rednote.com/explore`；如果是，切到 `opencli rednote ...`，不要反复要求用户在旧域名登录。
 
 ### 后端 B：xiaohongshu-mcp（服务器场景）
 

@@ -43,9 +43,9 @@ explicitly asks for Agent Reach.**
    connected services, use the current agent's official/native tools first. Do
    not trigger Agent Reach just because the user pasted a URL.
 1. **Health-check only when needed**: when you need Agent Reach for a
-   multi-backend platform (XiaoHongShu / Reddit / Bilibili / Twitter), run
-   `agent-reach doctor --json` first and pick the command group matching each
-   platform's `active_backend`.
+   multi-backend platform (XiaoHongShu / RedNote / Reddit / Bilibili /
+   Twitter), run `agent-reach doctor --json` first and pick the command group
+   matching each platform's `active_backend`.
 2. **Announce what you use**: say "using agent-reach, platform X via backend Y"
    before starting.
 3. **On failure, follow the retry chains in references/** — never guess
@@ -106,7 +106,15 @@ twitter search "query" -n 10
 opencli reddit search "query" -f yaml   # desktop
 rdt search "query" --limit 10            # legacy/server
 
-# XiaoHongShu (desktop prefers OpenCLI)
+# XiaoHongShu / RedNote (desktop prefers OpenCLI)
+# If login lands on https://www.rednote.com/explore, use the RedNote adapter.
+opencli rednote whoami -f yaml
+opencli rednote search "query" -f yaml
+opencli rednote note "NOTE_URL" -f yaml
+opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml
+
+# Use the old domain adapter only when the active session is still on
+# www.xiaohongshu.com.
 opencli xiaohongshu search "query" -f yaml
 ```
 

@@ -50,7 +50,7 @@ metadata:
 ## 常驻规则（全程适用）
 
 0. **官方优先**：普通网页、公开 URL、GitHub 仓库/Issue/PR、Google Drive/Gmail 等，先用当前 agent 暴露的官方/内置工具。不要因为用户贴了一个 URL 就触发 Agent Reach。
-1. **需要时再体检**：多后端平台（小红书/Reddit/B站/Twitter）需要使用 Agent Reach 时，先跑
+1. **需要时再体检**：多后端平台（小红书/RedNote/Reddit/B站/Twitter）需要使用 Agent Reach 时，先跑
    `agent-reach doctor --json`，按各平台 `active_backend` 字段选命令组。
 2. **声明你在用什么**：开始干活前说一句「使用 agent-reach 的 X 平台 / Y 后端」。
 3. **失败按 references 里的重试链处理**，不要瞎猜命令。
@@ -104,7 +104,14 @@ twitter search "query" -n 10
 opencli reddit search "query" -f yaml   # 桌面
 rdt search "query" --limit 10            # 存量/服务器
 
-# 小红书（桌面首选 OpenCLI）
+# 小红书 / RedNote（桌面首选 OpenCLI）
+# 如果登录后停在 https://www.rednote.com/explore，用 rednote 适配器。
+opencli rednote whoami -f yaml
+opencli rednote search "query" -f yaml
+opencli rednote note "NOTE_URL" -f yaml
+opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml
+
+# 只有会话仍在 www.xiaohongshu.com 时才用旧域名适配器。
 opencli xiaohongshu search "query" -f yaml
 ```
 
