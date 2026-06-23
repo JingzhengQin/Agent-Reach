@@ -23,22 +23,25 @@ https://www.rednote.com/explore
 # 登录态检查
 opencli rednote whoami -f yaml --site-session persistent --window foreground --keep-tab true
 
-# 搜索笔记
-opencli rednote search "query" --limit 20 -f yaml --site-session persistent --window foreground --keep-tab true
+# 搜索笔记。多 agent 或自动化任务默认释放 tab，避免共享页面状态互相覆盖。
+opencli rednote search "query" --limit 20 -f yaml --site-session persistent --window foreground --keep-tab false
 
 # 读笔记正文+互动数据（用搜索结果里的完整 URL，含 xsec_token）
-opencli rednote note "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab true
+opencli rednote note "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab false
 
 # 下载图文笔记图片/视频
-opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml --site-session persistent --window foreground --keep-tab true
+opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml --site-session persistent --window foreground --keep-tab false
 
-# 评论（支持楼中楼）
-opencli rednote comments NOTE_ID -f yaml --site-session persistent --window foreground --keep-tab true
+# 评论（支持楼中楼；必须使用搜索结果里的完整 URL，不能传裸 NOTE_ID）
+opencli rednote comments "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab false
 ```
 
-> 实操提示：RedNote/XHS 登录态容易被新 tab 或临时上下文打散。需要连续读多篇笔记时，保留
-> `--site-session persistent --window foreground --keep-tab true`，并把下载文件放在 `/tmp/`
-> 或任务明确要求的输出目录。
+> 实操提示：RedNote/XHS 登录态容易被新 tab 或临时上下文打散，也会被多个 agent 共享
+> OpenCLI 浏览器页面状态时互相覆盖。自动化任务默认使用 `--keep-tab false`；只有确认没有其他
+> agent 正在用 OpenCLI/RedNote，且需要人工继续看同一个 tab 时，才保留 `--keep-tab true`。
+> 如果 `note` / `comments` 返回的标题或正文和目标餐厅不匹配，通常是旧 URL、过期 xsec_token
+> 或共享 tab race；重新 `search` 拿 fresh signed URL，再用该完整 URL 重读，不要复用裸 note id。
+> 下载文件放在 `/tmp/` 或任务明确要求的输出目录。
 
 ### 后端 A：OpenCLI（桌面首选，复用浏览器登录态）
 
@@ -52,8 +55,8 @@ opencli xiaohongshu search "query" -f yaml
 # 读笔记正文+互动数据（用搜索结果里的完整 URL，含 xsec_token）
 opencli xiaohongshu note "NOTE_URL" -f yaml
 
-# 评论（支持楼中楼）
-opencli xiaohongshu comments NOTE_ID -f yaml
+# 评论（支持楼中楼；优先用搜索结果里的完整 URL，含 xsec_token）
+opencli xiaohongshu comments "NOTE_URL" -f yaml
 
 # 首页推荐 feed
 opencli xiaohongshu feed -f yaml

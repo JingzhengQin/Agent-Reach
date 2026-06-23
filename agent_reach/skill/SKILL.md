@@ -73,9 +73,10 @@ rdt search "query" --limit 10            # 存量/服务器
 # 小红书 / RedNote（桌面首选 OpenCLI）
 # 如果登录后停在 https://www.rednote.com/explore，用 rednote 适配器。
 opencli rednote whoami -f yaml
-opencli rednote search "query" -f yaml
-opencli rednote note "NOTE_URL" -f yaml
-opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml
+opencli rednote search "query" -f yaml --site-session persistent --window foreground --keep-tab false
+opencli rednote note "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab false
+opencli rednote comments "NOTE_URL" -f yaml --site-session persistent --window foreground --keep-tab false
+opencli rednote download "NOTE_URL" --output /tmp/rednote-downloads -f yaml --site-session persistent --window foreground --keep-tab false
 
 # 只有会话仍在 www.xiaohongshu.com 时才用旧域名适配器。
 opencli xiaohongshu search "query" -f yaml
