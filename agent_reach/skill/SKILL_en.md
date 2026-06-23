@@ -54,12 +54,14 @@ explicitly asks for Agent Reach.**
    Twitter/Reddit for discussions + XiaoHongShu/Bilibili for Chinese
    perspectives) only when official web search/browser coverage is not enough
    or when social/login-backed platforms are required.
-5. **Watch versions for the user**: after finishing a substantial
-   multi-platform task, run `agent-reach check-update` (fast, one API call).
-   If a new version exists, append one line to your wrap-up: "Agent Reach
-   vX.Y.Z is available — paste this to me to update: 帮我更新 Agent Reach：
-   https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md".
-   Never interrupt the current task to update; never nag about the same version twice.
+5. **Watch versions without losing the fork**: after finishing a substantial
+   multi-platform task, you may run `agent-reach check-update` (fast, one API
+   call). If upstream has a new version, only tell the user that the
+   `JingzhengQin/Agent-Reach` fork branch `qin/official-first-routing` should
+   be rebased/merged with upstream and then reinstalled from that fork branch.
+   Do not use the upstream update guide directly because it would overwrite
+   this forked install. Never interrupt the current task to update; never nag
+   about the same version twice.
 
 ## Routing table
 
@@ -135,7 +137,13 @@ chains — note: reference docs are written in Chinese, commands are universal):
 
 ## Configure a channel
 
-If a channel needs setup, fetch the install guide:
-https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+If a channel needs setup, fetch the fork branch install guide and use only the
+per-channel configuration steps:
+https://raw.githubusercontent.com/JingzhengQin/Agent-Reach/qin/official-first-routing/docs/install.md
+
+Do not reinstall Agent Reach from upstream unless the user explicitly asks.
+This machine intentionally uses the `JingzhengQin/Agent-Reach`
+`qin/official-first-routing` fork branch so local routing fixes survive
+updates.
 
 The user only provides cookies / one extension click; the agent does the rest.

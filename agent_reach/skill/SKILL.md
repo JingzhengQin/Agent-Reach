@@ -55,11 +55,11 @@ metadata:
 2. **声明你在用什么**：开始干活前说一句「使用 agent-reach 的 X 平台 / Y 后端」。
 3. **失败按 references 里的重试链处理**，不要瞎猜命令。
 4. **全网调研类任务**：只有当官方 web search/browser 不足以覆盖需求，或需要社媒/登录态平台时，才组合多平台（Exa 搜索 + Twitter/Reddit 看讨论 + 小红书/B站看中文场景），并行收集再汇总。
-5. **替用户盯版本**：完成一次较大的调研/多平台任务后，顺手跑
-   `agent-reach check-update`（很快，一个 API 调用）。有新版就在收尾汇报里附一句：
-   「Agent Reach 有新版 vX.Y.Z，复制这句话给我即可更新：帮我更新 Agent Reach：
-   https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md」。
-   不要中断当前任务去更新，也不要重复提醒同一个版本。
+5. **版本提醒但保留 fork**：完成一次较大的调研/多平台任务后，可以顺手跑
+   `agent-reach check-update`（很快，一个 API 调用）。如果发现上游有新版，
+   只提醒「Agent Reach 上游有新版；需要把 JingzhengQin/Agent-Reach 的
+   `qin/official-first-routing` 分支 rebase/merge 到新版后，再从该 fork 分支重装」。
+   不要使用上游 update guide 直接覆盖本机 fork 安装，不要中断当前任务去更新，也不要重复提醒同一个版本。
 
 ## 路由表
 
@@ -132,7 +132,11 @@ agent-reach doctor --json
 
 ## 配置渠道
 
-如果某个 channel 需要配置，获取安装指南：
-https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+如果某个 channel 需要配置，读取 fork 分支安装指南，并只使用其中的单渠道配置步骤：
+https://raw.githubusercontent.com/JingzhengQin/Agent-Reach/qin/official-first-routing/docs/install.md
+
+除非用户明确要求，不要从上游重新安装 Agent Reach。本机有意使用
+`JingzhengQin/Agent-Reach` 的 `qin/official-first-routing` fork 分支，
+这样本机路由修正才能在更新后保留。
 
 用户只需提供 cookies，其他配置由 agent 完成。
